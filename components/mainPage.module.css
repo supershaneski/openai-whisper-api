@@ -1,0 +1,47 @@
+.container {
+    position: relative;
+    height: 100vh;
+}
+
+.main {
+    /*background-color: #eef;*/
+    position: relative;
+    height: calc(100% - 170px);
+    z-index: 1;
+    overflow-y: auto;
+}
+
+.list {
+    position: relative;
+    padding: 1rem;
+}
+
+.mainError {
+    position: relative;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.error {
+    color: #E74C3C66;
+}
+.info {
+    color: #999;
+}
+
+.control {
+    /*box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;*/
+    /*
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;;
+    */
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    background-color: #fff;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 170px;
+    z-index: 2;
+    opacity: .3;
+}

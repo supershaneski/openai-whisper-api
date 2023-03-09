@@ -1,0 +1,49 @@
+.container {
+    background-color: #fff;
+    position: relative;
+}
+
+.center {
+    position: relative;
+    height: 130px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom {
+    /*background-color: #ab6;*/
+    position: relative;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item {
+    /*border-right: 1px solid rgba(0, 0, 0, 0.125);*/
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.item:last-child {
+    border-right: 0;
+}
+
+.iconPanel, .iconButton, .disabledButton {
+    /*background-color: #e6e6e6;*/
+    width: calc(2rem + 5px);
+    height: calc(2rem + 5px);
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.iconButton {
+    transition: all .3s ease-in;
+    cursor: pointer;
+}
+.iconButton:hover {
+    background-color: #f5f5f5;
+}
