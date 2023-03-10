@@ -10,6 +10,8 @@ For other versions, please check:
 
 # Table of Contents
 
+- [openai-whisper-api](#openai-whisper-api)
+- [Table of Contents](#table-of-contents)
 - [Usage](#usage)
 - [Stack](#stack)
 - [Next 13 Route Handler + File Upload](#next-13-route-handler--file-upload)
@@ -195,5 +197,6 @@ Finally, to run the app
 npm run dev
 ```
 
-Open your browser to `http://localhost:3000/` to load the application page.
+Open your browser to `http://localhost:3005/` to load the application page.
+Please note that the port number is subject to the availability and may change.
 
