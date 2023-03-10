@@ -10,6 +10,7 @@ import { startStates } from './startbutton'
 import ControlPanel from './controlPanel'
 import Dialog from './dialog'
 import SnackBar from './snackbar'
+import AudioModal from './audiomodal'
 
 import Transcript from './transcript'
 
@@ -55,6 +56,9 @@ export default function MainPage() {
 
     const [openSettings, setOpenSettings] = React.useState(false)
     const [openSnack, setOpenSnack] = React.useState(false)
+
+    const [openAudioDialog, setOpenAudioDialog] = React.useState(false)
+    const [audioFile, setAudioFile] = React.useState('')
 
     const [isMounted, setMounted] = React.useState(false)
     
@@ -381,10 +385,21 @@ export default function MainPage() {
         /**
          * TODO: Play audio data
          */
+
+        console.log(file)
+
+        setAudioFile(file)
+        setOpenAudioDialog(true)
+
     }
 
     const handleCloseSnack = () => {
         setOpenSnack(false)
+    }
+
+    const handleCloseAudio = () => {
+        setOpenAudioDialog(false)
+        setAudioFile('')
     }
 
     return (
@@ -439,6 +454,12 @@ export default function MainPage() {
             {
                 openSnack && createPortal(
                     <SnackBar onClose={handleCloseSnack} text="Problem sending the request to remote Whisper API." />,
+                    document.body,
+                )
+            }
+            {
+                openAudioDialog && createPortal(
+                    <AudioModal file={audioFile} onClose={handleCloseAudio} />,
                     document.body,
                 )
             }
