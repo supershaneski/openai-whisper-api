@@ -17,6 +17,7 @@ For other versions, please check:
 - [Next 13 Route Handler + File Upload](#next-13-route-handler--file-upload)
 - [Speech To Text](#speech-to-text)
 - [Installation](#installation)
+- [Using HTTPS](#using-https)
 
 # Usage
 
@@ -198,5 +199,43 @@ npm run dev
 ```
 
 Open your browser to `http://localhost:3005/` to load the application page.
-Please note that the port number is subject to the availability and may change.
+Please note that the `port number` is subject to the availability and may change.
 
+> Note: You can only capture audio data using `http` in `localhost`.
+
+
+# Using HTTPS
+
+You might want to use a remote computer or any remote device connected to your network to run this app. In that case, you will need to run it in `https` so that we can capture audio data.
+
+Prepare the proper `certificate` and `key` files and put it in the root directory and edit `server.js` file, also located in the root directory.
+
+In `server.js`
+```javascript
+
+const httpsOptions = {
+    key: fs.readFileSync('./KEY.pem'),
+    cert: fs.readFileSync('./CERT.pem')
+}
+
+```
+
+You also need to provide your local `hostname` and `port` in `server.js` since Next.js now [requires absolute path starting from version 13](https://nextjs.org/docs/messages/middleware-relative-urls).
+
+In `server.js`
+```javascript
+
+const hostname = '192.168.0.1'
+const port = 3006
+
+const app = next({ dev, hostname, port })
+
+```
+
+Then run
+
+```sh
+node server.js
+```
+
+Finally, open your browser to `https://localhost:3006/` or use your local hostname `https://192.168.0.1:3006`.

@@ -55,10 +55,10 @@ export default function MainPage() {
     const [openSettings, setOpenSettings] = React.useState(false)
 
     const [isMounted, setMounted] = React.useState(false)
-
+    
 
     React.useEffect(() => {
-
+        
         abortControllerRef.current = new AbortController()
         setMounted(true)
 
@@ -279,15 +279,16 @@ export default function MainPage() {
         }
 
         let formData = new FormData()
-        formData.append("file", file)
-        formData.append("name", name)
-        formData.append("datetime", datetime)
-        formData.append("options", JSON.stringify(options))
+        formData.append('file', file)
+        formData.append('name', name)
+        formData.append('datetime', datetime)
+        formData.append('options', JSON.stringify(options))
 
         try {
 
-            const response = await fetch("/api/", {
-                method: "POST",
+            const url = '/api/'
+            const response = await fetch(url, {
+                method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                 },

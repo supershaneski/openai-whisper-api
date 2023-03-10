@@ -23,6 +23,7 @@ build
 *.bu.css
 *.bu.jsx
 *.bu.js
+*.bu.ts
 *.m4a
 *.pem
 *.crt

@@ -40,6 +40,7 @@ export async function POST(req) {
 
     const url = options.endpoint === 'transcriptions' ? 'https://api.openai.com/v1/audio/transcriptions' : 'https://api.openai.com/v1/audio/translations'
     
+    /*
     let result = await new Promise((resolve, reject) => {
 
         axios.post(url, formData, {
@@ -61,11 +62,12 @@ export async function POST(req) {
     })
 
     const data = result?.output
+    */
 
     /**
      * Sample output
      */
-    //const data = "WEBVTT\n\n00:00:00.000 --> 00:00:03.000\nI wrote a letter to my friend , and on the way I dropped it.\n00:00:02.000 --> 00:00:05.000\nI dropped it, I dropped it."
+    const data = "WEBVTT\n\n00:00:00.000 --> 00:00:04.000\nThe party is starting now hurry up, let's go.\n00:00:04.000 --> 00:00:07.000\nHold this one, okay, do not drop it."
 
     return new Response(JSON.stringify({ 
         datetime,
