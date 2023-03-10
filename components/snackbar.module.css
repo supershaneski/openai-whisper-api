@@ -1,0 +1,63 @@
+.container {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+}
+
+.content {
+    background-color: #E74C3C99;
+    position: relative;
+    text-align: justify;
+    padding: .5rem 1rem;
+    border-radius: 5px;
+}
+
+.text {
+    color: #FFFFFF;
+}
+
+.show {
+    animation: snack-show .3s ease-out forwards;
+}
+
+.hide {
+    animation: snack-hide .3s ease-out forwards;
+}
+
+@keyframes snack-show {
+    from {
+        opacity: 0;
+        transform: translateY(3rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(-2rem);
+    }
+}
+
+@keyframes snack-hide {
+    0% {
+        opacity: 1;
+        transform: translateY(-2rem);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-3rem);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(3rem);
+    }
+}
+
+/*
+<div className={classes.container}>
+            <div className={classes.content}>
+                <span className={classes.text}>{ text }</span>
+            </div>
+        </div>
+*/

@@ -9,6 +9,7 @@ import { startStates } from './startbutton'
 
 import ControlPanel from './controlPanel'
 import Dialog from './dialog'
+import SnackBar from './snackbar'
 
 import Transcript from './transcript'
 
@@ -53,6 +54,7 @@ export default function MainPage() {
     const [isCountDown, setCountDown] = React.useState(false)
 
     const [openSettings, setOpenSettings] = React.useState(false)
+    const [openSnack, setOpenSnack] = React.useState(false)
 
     const [isMounted, setMounted] = React.useState(false)
     
@@ -296,6 +298,18 @@ export default function MainPage() {
                 signal: abortControllerRef.current.signal,
             })
     
+            if(!response.ok) {
+                
+                /**
+                 * I am assuming that all 500 errors will be caused by
+                 * problem in accessing the remote API endpoint for simplicity.
+                 */
+                if(response.status === 500) {
+                    setOpenSnack(true)
+                }
+
+            }
+
             const result = await response.json()
 
             setSendCount((prev) => prev - 1)
@@ -369,6 +383,10 @@ export default function MainPage() {
          */
     }
 
+    const handleCloseSnack = () => {
+        setOpenSnack(false)
+    }
+
     return (
         <div className={classes.container}>
             <div ref={listRef} className={classes.main}>
@@ -415,6 +433,12 @@ export default function MainPage() {
             {
                 openSettings && createPortal(
                     <Dialog onClose={handleCloseSettings} />,
+                    document.body,
+                )
+            }
+            {
+                openSnack && createPortal(
+                    <SnackBar onClose={handleCloseSnack} text="Problem sending the request to remote Whisper API." />,
                     document.body,
                 )
             }

@@ -1,7 +1,7 @@
 import MainPage from '../components/mainPage'
 
 export const metadata = {
-    title: 'Whisper API App',
+    title: 'Whisper API Sample App',
     description: 'A sample webapp for transcribing speech using OpenAI Speech to Text API based on Whisper',
     viewport: 'maximum-scale=1.0, minimum-scale=1.0, initial-scale=1.0, width=device-width, user-scalable=0',
     icons: {

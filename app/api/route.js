@@ -3,18 +3,25 @@ import path from "path"
 import axios from 'axios'
 import FormData from 'form-data'
 
-export async function POST(req) {
+import { cleanInput } from "../../lib/utils"
 
-    /**
-     * TODO: Add bad request handling
-     */
+export async function POST(req) {
 
     const form = await req.formData()
     
     const blob = form.get('file')
-    const name = form.get('name')
-    const datetime = form.get('datetime')
-    const raw_options = form.get('options')
+    const name = cleanInput(form.get('name'))
+    const datetime = cleanInput(form.get('datetime'))
+    const raw_options = cleanInput(form.get('options'))
+
+    /**
+     * Simple form validation
+     */
+    if(!blob || !name || !datetime) {
+        return new Response('Bad Request', {
+            status: 400,
+        })
+    }
 
     const options = JSON.parse(raw_options)
 
@@ -40,7 +47,6 @@ export async function POST(req) {
 
     const url = options.endpoint === 'transcriptions' ? 'https://api.openai.com/v1/audio/transcriptions' : 'https://api.openai.com/v1/audio/translations'
     
-    /*
     let result = await new Promise((resolve, reject) => {
 
         axios.post(url, formData, {
@@ -55,19 +61,18 @@ export async function POST(req) {
 
         }).catch((error) => {
             
-            reject(error)
+            reject(error) // Maybe rather than sending the whole error message, set some status value
 
         })
 
     })
 
     const data = result?.output
-    */
-
+    
     /**
      * Sample output
      */
-    const data = "WEBVTT\n\n00:00:00.000 --> 00:00:04.000\nThe party is starting now hurry up, let's go.\n00:00:04.000 --> 00:00:07.000\nHold this one, okay, do not drop it."
+    //const data = "WEBVTT\n\n00:00:00.000 --> 00:00:04.000\nThe party is starting now hurry up, let's go.\n00:00:04.000 --> 00:00:07.000\nHold this one, okay, do not drop it."
 
     return new Response(JSON.stringify({ 
         datetime,
