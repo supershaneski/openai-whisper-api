@@ -33,9 +33,9 @@ If sound is not detected for 3 seconds, recording will stop and the audio data i
 
 ![Settings](./docs/screenshot2.png "Settings")
 
-The transcriptions with timestamps will be shown in a list. In the future, you will be able to play the audio data by clicking the transcription. The transcriptions are stored in the localStorage. If the transcription does not contain any text data, it will be disregarded. 
-
-> TODO: Audio data playback
+The transcriptions with timestamps will be shown in a list and it is stored in localStorage.
+If the audio data does not contain any text data, it will be disregarded.
+You can click on the transcription to show the `Play` button if you want to play the audio data.
 
 
 # Stack
