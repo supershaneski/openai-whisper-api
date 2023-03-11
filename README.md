@@ -14,8 +14,6 @@ For other versions, please check:
 
 # Table of Contents
 
-- [openai-whisper-api](#openai-whisper-api)
-- [Table of Contents](#table-of-contents)
 - [Usage](#usage)
 - [Stack](#stack)
 - [Next 13 Route Handler + File Upload](#next-13-route-handler--file-upload)
