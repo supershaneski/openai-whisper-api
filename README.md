@@ -3,6 +3,10 @@ openai-whisper-api
 
 This is a sample speech transcription web application implementing `OpenAI` [Speech to Text API](https://platform.openai.com/docs/guides/speech-to-text) based on [Whisper](https://openai.com/research/whisper), an automatic speech recognition (ASR) system, built using [Next 13](https://nextjs.org/), the `React` framework.
 
+以下は、OpenAIテキスト読み上げAPIを実装したサンプルスピーチ転写アプリです。このアプリは、自動音声認識（ASR）システムのWhisperに基づいて構築され、ReactフレームワークのNext 13を使用しています。
+
+---
+
 For other versions, please check:
 - [openai-whisper](https://github.com/supershaneski/openai-whisper), using the `Whisper` python module, no remote API call, built on `Next.js`
 - [openai-chatterbox](https://github.com/supershaneski/openai-chatterbox), same as above but built using `Nuxt.js`
@@ -10,6 +14,8 @@ For other versions, please check:
 
 # Table of Contents
 
+- [openai-whisper-api](#openai-whisper-api)
+- [Table of Contents](#table-of-contents)
 - [Usage](#usage)
 - [Stack](#stack)
 - [Next 13 Route Handler + File Upload](#next-13-route-handler--file-upload)
@@ -31,9 +37,16 @@ If sound is not detected for 3 seconds, recording will stop and the audio data i
 
 ![Settings](./docs/screenshot2.png "Settings")
 
-The transcriptions with timestamps will be shown in a list and it is stored in localStorage.
 If the audio data does not contain any text data, it will be disregarded.
-You can click on the transcription to show the `Play` button if you want to play the audio data.
+
+The transcription data will be saved in the localStorage for easy retrieval.
+You can verify the accuracy of the transcription/translation by playing the saved audio data associated with the transcription/translation.
+
+![Audio Play](./docs/screenshot3.png "Audio Play")
+
+It is possible to delete the transcription item. Hover on a transcription to show the delete button and press the icon to show a dialog box to confirm.
+
+> TODO: save the transcription to file
 
 
 # Stack
@@ -66,7 +79,7 @@ You can click on the transcription to show the `Play` button if you want to play
   
   **Please note that this app will need an `OpenAI account` since we will be accessing API endpoint and will need a working `API key`.** 
   
-  If you have not yet done so, upon signing up will be given `$18 in free credit that can be used during your first 3 months`. Visit the [OpenAI website](https://platform.openai.com/) for more details.
+  If you have not yet done so, upon signing up you will be given `$18 in free credit that can be used during your first 3 months`. Visit the [OpenAI website](https://platform.openai.com/) for more details.
 
   If you want to try `Whisper` without using the API endpoint, please check [openai-whisper](https://github.com/supershaneski/openai-whisper) project.
 
@@ -189,6 +202,12 @@ npm install
 ```
 
 Create a `.env` file in the root directory and copy the contents of `.env.example` and replace the value of `OPENAI_APIKEY` with your own.
+
+```sh
+OPENAI_APIKEY=PUT_YOUR_OPENAI_API_KEY
+```
+
+If you have not yet registered in OpenAI, please note that upon signing up you will be given `$18 in free credit that can be used during your first 3 months`. Visit the [OpenAI website](https://platform.openai.com/) for more details.
 
 Finally, to run the app
 
