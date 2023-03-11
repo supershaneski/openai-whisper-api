@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import DeleteIcon from './delete'
+
 import classes from './transcript.module.css'
 
 const formatNumber = (n) => n < 10 ? '0' + n : n
@@ -30,7 +32,8 @@ export default function Transcript({
     filename = '',
     datetime = '',
     data = '',
-    onClick = undefined
+    onClick = undefined,
+    onDelete = undefined,
 }) {
 
     let items = []
@@ -50,9 +53,22 @@ export default function Transcript({
         }
     }
 
+    const handleDelete = (e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        onDelete(filename)
+    }
+
+    // Multiply: &#215;
+
     return (
         <div className={classes.container} onClick={onClick}>
-            <div className={classes.datetime}>{ formatDateTime(datetime) }</div>
+            <div className={classes.top}>
+                <div className={classes.datetime}>{ formatDateTime(datetime) }</div>
+                <div onClick={handleDelete} className={classes.iconButton}>
+                    <DeleteIcon color="#fff" />
+                </div>
+            </div>
             <div className={classes.list}>
             {
                 items.map((item, index) => {
@@ -86,4 +102,8 @@ Transcript.propTypes = {
      * Click event handler
      */
     onClick: PropTypes.func,
+    /**
+     * Delete event handler
+     */
+    onDelete: PropTypes.func,
 }

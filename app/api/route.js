@@ -31,6 +31,22 @@ export async function POST(req) {
     
     fs.writeFileSync(filepath, buffer)
 
+    /**
+     * We are going to check the file size here to decide
+     * whether to send it or not to the API.
+     * As for the min file size value, it is based on my testing.
+     */
+    const minFileSize = 18000 // bytes
+    const stats = fs.statSync(filepath)
+
+    if(parseInt(stats.size) < minFileSize) {
+
+        return new Response('Bad Request', {
+            status: 400,
+        })
+    }
+
+    
     let header = {
         'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
@@ -68,7 +84,7 @@ export async function POST(req) {
     })
 
     const data = result?.output
-    
+
     /**
      * Sample output
      */

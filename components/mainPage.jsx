@@ -11,6 +11,7 @@ import ControlPanel from './controlPanel'
 import Dialog from './dialog'
 import SnackBar from './snackbar'
 import AudioModal from './audiomodal'
+import Modal from './modal'
 
 import Transcript from './transcript'
 
@@ -22,6 +23,7 @@ export default function MainPage() {
     const dataCount = useAppData((state) => state.count)
     const dataItems = useAppData((state) => state.items)
     const addDataItems = useAppData((state) => state.add)
+    const deleteDataItem = useAppData((state) => state.delete)
 
     const minDecibels = useAppStore((state) => state.threshold)
     const maxPause = useAppStore((state) => state.interval)
@@ -59,6 +61,8 @@ export default function MainPage() {
 
     const [openAudioDialog, setOpenAudioDialog] = React.useState(false)
     const [audioFile, setAudioFile] = React.useState('')
+
+    const [openModal, setOpenModal] = React.useState(false)
 
     const [isMounted, setMounted] = React.useState(false)
     
@@ -381,12 +385,10 @@ export default function MainPage() {
         setOpenSettings(false)
     }
 
-    const handleClickTranscript = (file) => {
+    const handleClickTranscript = async (file) => {
         /**
          * TODO: Play audio data
          */
-
-        console.log(file)
 
         setAudioFile(file)
         setOpenAudioDialog(true)
@@ -400,6 +402,28 @@ export default function MainPage() {
     const handleCloseAudio = () => {
         setOpenAudioDialog(false)
         setAudioFile('')
+    }
+
+    const handleDelete = (file) => {
+        
+        setAudioFile(file)
+        setOpenModal(true)
+        
+    }
+
+    const handleCloseModal = () => {
+
+        setAudioFile('')
+        setOpenModal(false)
+    }
+
+    const handleClickModal = () => {
+        
+        deleteDataItem(audioFile)
+
+        setAudioFile('')
+        setOpenModal(false)
+
     }
 
     return (
@@ -427,6 +451,7 @@ export default function MainPage() {
                                 key={item.filename}
                                 {...item}
                                 onClick={() => handleClickTranscript(item.filename)}
+                                onDelete={handleDelete}
                                 />
                             )
                         })
@@ -460,6 +485,13 @@ export default function MainPage() {
             {
                 openAudioDialog && createPortal(
                     <AudioModal file={audioFile} onClose={handleCloseAudio} />,
+                    document.body,
+                )
+            }
+            {
+                openModal && createPortal(
+                    <Modal text='Are you sure you want to delete this transcript?' 
+                    buttonText='Delete' onButtonClick={handleClickModal} onCancel={handleCloseModal} />,
                     document.body,
                 )
             }

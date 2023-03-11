@@ -15,6 +15,17 @@ export const useAppData = create(
 
         set({ items: _items, count: _count })
       },
+      delete: (key) => {
+
+        let _items = get().items
+
+        _items = _items.filter((item) => item.filename !== key)
+
+        const _count = _items.length
+
+        set({ items: _items, count: _count })
+
+      }
     }),
     {
       name: 'openai-whisper-data-storage',

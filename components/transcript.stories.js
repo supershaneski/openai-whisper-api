@@ -4,23 +4,19 @@ export default {
   title: 'Whisper/Transcript',
   component: Transcript,
   tags: ['autodocs'],
-  /*argTypes: {
+  argTypes: {
     onClick: { action: 'click' },
-  },*/
+    onDelete: { action: 'delete' },
+    //datetime: {
+    //  control: { type: 'date' }
+    //}
+  },
 };
 
-/*
-data: [
-        { timestamp: '00:02.000 - 00:03:000', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit,' },
-        { timestamp: '00:03.000 - 00:10:000', text: 'sed do eiusmod tempor incididunt ut labore et dolore' },
-        { timestamp: '00:10.000 - 00:15:000', text: 'magna aliqua.' },
-        { timestamp: '00:15.000 - 00:21:000', text: 'Ut enim ad minim veniam, quis nostrud exercitation' },
-    ]
-    */
-   
 export const Primary = {
   args: {
-    datetime: '2023-03-08 13:52:04',
-    data: ''
+    filename: 'file2023031109121005.m4a',
+    datetime: '2023-03-08T00:15:34.310Z',
+    data: 'WEBVTT\n\n00:00:00.000 --> 00:00:04.000\nThe party is starting now hurry up, lets go.\n00:00:04.000 --> 00:00:07.000\nHold this one, okay, do not drop it.'
   },
 };
