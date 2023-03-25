@@ -3,6 +3,8 @@ openai-whisper-api
 
 This is a sample speech transcription web application implementing `OpenAI` [Speech to Text API](https://platform.openai.com/docs/guides/speech-to-text) based on [Whisper](https://openai.com/research/whisper), an automatic speech recognition (ASR) system, built using [Next 13](https://nextjs.org/), the `React` framework.
 
+> **Update:** I added support using the python module instead of the whisper API so that you can use whisper without OpenAI account. See [python module installation](#installing-whisper-python-module) section for more details.
+
 以下は、OpenAIテキスト読み上げAPIを実装したサンプルスピーチ転写アプリです。このアプリは、自動音声認識（ASR）システムのWhisperに基づいて構築され、ReactフレームワークのNext 13を使用しています。
 
 ---
@@ -21,6 +23,7 @@ For other versions, please check:
 - [Stack](#stack)
 - [Next 13 Route Handler + File Upload](#next-13-route-handler--file-upload)
 - [Speech To Text](#speech-to-text)
+- [Installing Whisper Python module](#installing-whisper-python-module)
 - [Installation](#installation)
 - [Using HTTPS](#using-https)
 
@@ -28,7 +31,7 @@ For other versions, please check:
 
 ![User Interface](./docs/screenshot1.png "User Interface")
 
-**Please note that you need a working `OpenAI API Key` to run this application. See the [installation](#installation) procedure below.**
+**Please note that you can choose to use either the `whisper python module` which does not need OpenAI API Key or `whisper API` which needs a working `OpenAI API Key` to run this application . See the [installation](#installation) procedure below.**
 
 Run the app and click the Start button.
 
@@ -83,11 +86,14 @@ It is possible to delete the transcription item. Hover on a transcription to sho
 
 - [Speech to Text API](https://platform.openai.com/docs/guides/speech-to-text), OpenAI speech to text API based on the state-of-the-art open source large-v2 `Whisper` model.
   
-  **Please note that this app will need an `OpenAI account` since we will be accessing API endpoint and will need a working `API key`.** 
+  You will need an `OpenAI API key` to use this API endpoint. 
   
-  If you have not yet done so, upon signing up you will be given `$18 in free credit that can be used during your first 3 months`. Visit the [OpenAI website](https://platform.openai.com/) for more details.
+  If you have not yet done so, upon signing up an OpenAI account, you will be given `$18 in free credit that can be used during your first 3 months`. Visit the [OpenAI website](https://platform.openai.com/) for more details.
 
-  If you want to try `Whisper` without using the API endpoint, please check [openai-whisper](https://github.com/supershaneski/openai-whisper) project.
+- [Whisper Python module](https://github.com/openai/whisper), python module to use whisper without using the API endpoint. 
+  
+  Install this if you do not have OpenAI account/API key or you do not want to use the `whisper API`. See the [installation procedure](#installing-whisper-python-module) below.
+
 
 - [Form-Data](https://github.com/form-data/form-data#readme), library to create readable `multipart/form-data` streams. `Whisper API` currently only has python and curl implementations. Since [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData) does not exist inside `route handler` so we need an alternative.
 
@@ -195,6 +201,41 @@ const transcribe_url = "https://api.openai.com/v1/audio/translations"
 If the audio data will contain other language, it is better to use the translation endpoint.
 
 
+# Installing Whisper Python module
+
+If you wish to use this app without OpenAI API key or without using whisper API endpoint, you need to install this.
+
+First, you need to install [`Whisper`](https://github.com/openai/whisper) and its `Python` dependencies
+
+```sh
+$ pip install git+https://github.com/openai/whisper.git
+```
+
+You also need `ffmpeg` installed on your system
+
+```sh
+# macos
+$ brew install ffmpeg
+
+# windows using chocolatey
+$ choco install ffmpeg
+
+# windows using scoop
+$ scoop install ffmpeg
+```
+
+By this time, you can test `Whisper` using command line
+
+```sh
+$ whisper myaudiofile.ogg --language English --task translate
+```
+
+You can find sample audio files for testing from [here](https://commons.wikimedia.org/wiki/Category:Audio_files_of_speeches).
+
+
+If that is successful, continue to the installation procedures below.
+
+
 # Installation
 
 Clone the repository and install the dependencies
@@ -211,9 +252,17 @@ Create a `.env` file in the root directory and copy the contents of `.env.exampl
 
 ```sh
 OPENAI_APIKEY=PUT_YOUR_OPENAI_API_KEY
+DO_NOT_USE_API=false
 ```
 
 If you have not yet registered in OpenAI, please note that upon signing up you will be given `$18 in free credit that can be used during your first 3 months`. Visit the [OpenAI website](https://platform.openai.com/) for more details.
+
+If you do not want to use `Whisper API`, just set `DO_NOT_USE_API` to TRUE. Be sure to [install the python module](#installing-whisper-python-module) first.
+
+```sh
+OPENAI_APIKEY=PUT_YOUR_OPENAI_API_KEY
+DO_NOT_USE_API=true
+```
 
 Finally, to run the app
 
