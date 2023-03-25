@@ -25,6 +25,9 @@ build
 *.bu.js
 *.bu.ts
 *.m4a
+*.m4a.srt
+*.m4a.txt
+*.m4a.vtt
 *.pem
 *.crt
 

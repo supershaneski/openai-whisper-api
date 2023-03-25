@@ -1,9 +1,10 @@
-import fs from "fs"
-import path from "path"
+import fs from 'fs'
+import path from 'path'
+import { exec } from 'child_process'
 import axios from 'axios'
 import FormData from 'form-data'
 
-import { cleanInput } from "../../lib/utils"
+import { cleanInput } from '../../lib/utils'
 
 export async function POST(req) {
 
@@ -46,7 +47,80 @@ export async function POST(req) {
             status: 400,
         })
     }
+
+    const flagDoNotUseApi = process.env?.DO_NOT_USE_API === 'true'
+
+    if(flagDoNotUseApi) {
+        
+        const outputDir = path.join('public', 'uploads') 
+
+        let sCommand = `whisper './${filepath}' --language ${options.language} --temperature ${options.temperature} --model tiny --output_dir '${outputDir}'`
+        if(options.endpoint === 'translations') {
+            sCommand = `whisper './${filepath}' --language ${options.language} --task translate --temperature ${options.temperature} --model tiny --output_dir '${outputDir}'`
+        }
+
+        const retval = await new Promise((resolve, reject) => {
+
+            exec(sCommand, (error, stdout, stderr) => {
+                
+                if (error) {
+                    
+                    resolve({
+                        status: 'error',
+                        message: "Failed to transcribe [1]",
+                    })
     
+                } else {
+    
+                    resolve({
+                        status: 'ok',
+                        error: stderr,
+                        //pid: getSimpleId(),
+                        out: stdout,
+                        //url: fileUrl,
+                        //datetime: dateTimeCreated,
+                    })
+    
+                }
+                
+            })
+    
+        })
+
+        if(retval.status === "error" || retval.out.length === 0) {
+            return new Response('Bad Request', {
+                status: 400,
+            })
+        }
+
+        /**
+         * retval.out format: '[00:01.000 --> 00:02.000]  thank\n' +
+         *             '[00:02.720 --> 00:03.720]  you\n' +
+         */
+        let sout = []
+        let stokens = retval.out.split('\n')
+        for(let i = 0; i < stokens.length; i++) {
+            let n = stokens[i].indexOf(']')
+            if(n > 0) {
+                let s1 = stokens[i].substr(0, n + 1)
+                let s2 = stokens[i].substr(n + 1)
+                sout.push(s1)
+                sout.push(s2)
+            } else {
+                sout.push(stokens[i])
+            }
+        }
+
+        return new Response(JSON.stringify({ 
+            datetime,
+            filename,
+            data: sout.join('\n'),
+        }), {
+            status: 200,
+        })
+
+    }
+     
     let header = {
         'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
@@ -54,12 +128,12 @@ export async function POST(req) {
     }
 
     let formData = new FormData()
-    formData.append("file", fs.createReadStream(filepath))
-    formData.append("model", "whisper-1")
-    formData.append("response_format", "vtt") // e.g. text, vtt, srt
+    formData.append('file', fs.createReadStream(filepath))
+    formData.append('model', 'whisper-1')
+    formData.append('response_format', 'vtt') // e.g. text, vtt, srt
 
-    formData.append("temperature", options.temperature)
-    formData.append("language", options.language)
+    formData.append('temperature', options.temperature)
+    formData.append('language', options.language)
 
     const url = options.endpoint === 'transcriptions' ? 'https://api.openai.com/v1/audio/transcriptions' : 'https://api.openai.com/v1/audio/translations'
     
@@ -82,6 +156,7 @@ export async function POST(req) {
         })
 
     })
+    
 
     const data = result?.output
 

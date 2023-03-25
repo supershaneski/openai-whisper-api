@@ -14,7 +14,10 @@ For other versions, please check:
 
 # Table of Contents
 
+- [openai-whisper-api](#openai-whisper-api)
+- [Table of Contents](#table-of-contents)
 - [Usage](#usage)
+- [Known Issues](#known-issues)
 - [Stack](#stack)
 - [Next 13 Route Handler + File Upload](#next-13-route-handler--file-upload)
 - [Speech To Text](#speech-to-text)
@@ -46,6 +49,11 @@ It is possible to delete the transcription item. Hover on a transcription to sho
 
 > TODO: save the transcription to file
 
+# Known Issues
+
+- **Fixed**. If `minDecibels` values is the same as `maxDecibels`, it will throw an error `INDEX_SIZE_ERR`. The default value of `maxDecibels` is -30dB. I added `maxDecibels` in the code to handle this.
+
+- If you set `minDecibels` to very low values (-60dB to -70dB), recording can be triggered by faint noises and the resulting audio data may not be discernible to the API and it can throw 400 Bad Request.
 
 # Stack
 
