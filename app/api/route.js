@@ -35,6 +35,7 @@ export async function POST(req) {
      * We are going to check the file size here to decide
      * whether to send it or not to the API.
      * As for the min file size value, it is based on my testing.
+     * There is probably a better way to check if the file has no audio data.
      */
     const minFileSize = 18000 // bytes
     const stats = fs.statSync(filepath)
@@ -45,7 +46,6 @@ export async function POST(req) {
             status: 400,
         })
     }
-
     
     let header = {
         'Content-Type': 'multipart/form-data',

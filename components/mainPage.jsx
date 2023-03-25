@@ -166,6 +166,7 @@ export default function MainPage() {
         const audioContext = new AudioContext()
         const audioStreamSource = audioContext.createMediaStreamSource(stream)
         const analyser = audioContext.createAnalyser()
+        analyser.maxDecibels = -10
         analyser.minDecibels = minDecibels
         audioStreamSource.connect(analyser)
 
