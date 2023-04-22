@@ -20,6 +20,7 @@ For other versions, please check:
 - [Table of Contents](#table-of-contents)
 - [Usage](#usage)
 - [Known Issues](#known-issues)
+- [Speed Test](#speed-test)
 - [Stack](#stack)
 - [Next 13 Route Handler + File Upload](#next-13-route-handler--file-upload)
 - [Speech To Text](#speech-to-text)
@@ -57,6 +58,50 @@ It is possible to delete the transcription item. Hover on a transcription to sho
 - **Fixed**. If `minDecibels` values is the same as `maxDecibels`, it will throw an error `INDEX_SIZE_ERR`. The default value of `maxDecibels` is -30dB. I added `maxDecibels` in the code to handle this.
 
 - If you set `minDecibels` to very low values (-60dB to -70dB), recording can be triggered by faint noises and the resulting audio data may not be discernible to the API and it can throw 400 Bad Request.
+
+# Speed Test
+
+Using whisper-api
+
+**Audio data**
+
+- [Damian Lewis as Antony in Julius Caesar via Guardian Culture](https://youtu.be/q89MLuLSJgk)
+- URL: https://youtu.be/q89MLuLSJgk
+- Duration: 02:33
+
+I selected this because there is no overpowering background music.
+
+**App settings**
+
+- MaxPause: 2500ms
+- MinDecibels: -60dB
+- Transcriptions
+- Language: English
+- Temperature: 0
+
+MaxPause setting will cause the transcription to be divided into 3 files.
+
+Audio data is saved as webm.
+
+**Result**
+
+1st part
+- File size: 693KB
+- Duration: 01:03
+- Process time: 4s
+
+2nd part
+- File size: 808KB
+- Duration: 01:00
+- Process time: 4s
+
+3rd part
+- File size: 462KB
+- Duration: 00:29
+- Process time: 2s
+
+`Process time` is the time from sending the audio data to the back end and finally getting result from whisper API.
+
 
 # Stack
 
