@@ -151,12 +151,28 @@ export default function MainPage() {
 
     const handleStream = (stream) => {
 
-        setReady(true)
+        try {
+            
+            mediaRef.current = new MediaRecorder(stream, {
+                audioBitsPerSecond: 128000,
+                mimeType: 'audio/webm;codecs=opus',
+            })
 
-        mediaRef.current = new MediaRecorder(stream)
+        } catch(error) {
+
+            console.log(error)
+
+            mediaRef.current = new MediaRecorder(stream, {
+                audioBitsPerSecond: 128000,
+            })
+
+        }
+
         mediaRef.current.addEventListener('dataavailable', handleData)
         mediaRef.current.addEventListener("stop", handleStop)
         
+        setReady(true)
+
         checkAudioLevel(stream)
 
     }
@@ -271,7 +287,7 @@ export default function MainPage() {
         
         const datetime = recordDateTime.current
         const name = `file${Date.now()}` + Math.round(Math.random() * 100000)
-        const file = new File([blob], `${name}.m4a`)
+        const file = new File([blob], `${name}.webm`)
 
         chunksRef.current = []
         
@@ -290,10 +306,12 @@ export default function MainPage() {
         }
 
         let formData = new FormData()
-        formData.append('file', file)
+        formData.append('file', file, `${name}.webm`)
         formData.append('name', name)
         formData.append('datetime', datetime)
         formData.append('options', JSON.stringify(options))
+
+        console.log("[send data]", (new Date()).toLocaleTimeString())
 
         try {
 
@@ -322,6 +340,8 @@ export default function MainPage() {
             const result = await response.json()
 
             setSendCount((prev) => prev - 1)
+
+            console.log("[received data]", (new Date()).toLocaleTimeString())
 
             /**
              * verify if result does not contain any useful data, disregard

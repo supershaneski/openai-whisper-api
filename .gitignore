@@ -30,6 +30,7 @@ build
 *.m4a.vtt
 *.pem
 *.crt
+*.webm
 
 # Editor directories and files
 .vscode/*
