@@ -1,10 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 import { exec } from 'child_process'
-import axios from 'axios'
-import FormData from 'form-data'
-
+//import axios from 'axios'
+//import FormData from 'form-data'
 import { cleanInput } from '../../lib/utils'
+
+import { whisper } from '../../services/openai'
 
 export async function POST(req) {
 
@@ -75,10 +76,7 @@ export async function POST(req) {
                     resolve({
                         status: 'ok',
                         error: stderr,
-                        //pid: getSimpleId(),
                         out: stdout,
-                        //url: fileUrl,
-                        //datetime: dateTimeCreated,
                     })
     
                 }
@@ -120,57 +118,47 @@ export async function POST(req) {
         })
 
     }
-     
-    let header = {
-        'Content-Type': 'multipart/form-data',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_APIKEY}`
-    }
 
-    let formData = new FormData()
-    formData.append('file', fs.createReadStream(filepath))
-    formData.append('model', 'whisper-1')
-    formData.append('response_format', 'vtt') // e.g. text, vtt, srt
+    let data = ''
 
-    formData.append('temperature', options.temperature)
-    formData.append('language', options.language)
+    try {
 
-    const url = options.endpoint === 'transcriptions' ? 'https://api.openai.com/v1/audio/transcriptions' : 'https://api.openai.com/v1/audio/translations'
+        const result = await whisper({
+            mode: options.endpoint,
+            file: fs.createReadStream(filepath),
+            response_format: 'vtt',
+            temperature: options.temperature,
+            language: options.language,
+        })
     
-    let result = await new Promise((resolve, reject) => {
+        data = result?.data
 
-        axios.post(url, formData, {
-            headers: {
-                ...header,
-            }
-        }).then((response) => {
-            
-            resolve({
-                output: response.data,
-            })
+        console.log(data)
 
-        }).catch((error) => {
-            
-            reject(error) // Maybe rather than sending the whole error message, set some status value
+    } catch(error) {
 
+        if(error.response) {
+            console.log(error.response.status)
+            console.log(error.response.data)
+        } else {
+            console.log(error.message)
+        }
+
+    } finally {
+
+        /**
+         * Sample output
+         */
+        //const data = "WEBVTT\n\n00:00:00.000 --> 00:00:04.000\nThe party is starting now hurry up, let's go.\n00:00:04.000 --> 00:00:07.000\nHold this one, okay, do not drop it."
+
+        return new Response(JSON.stringify({ 
+            datetime,
+            filename,
+            data,
+        }), {
+            status: 200,
         })
 
-    })
+    }
     
-
-    const data = result?.output
-
-    /**
-     * Sample output
-     */
-    //const data = "WEBVTT\n\n00:00:00.000 --> 00:00:04.000\nThe party is starting now hurry up, let's go.\n00:00:04.000 --> 00:00:07.000\nHold this one, okay, do not drop it."
-
-    return new Response(JSON.stringify({ 
-        datetime,
-        filename,
-        data,
-    }), {
-        status: 200,
-    })
-
 }
