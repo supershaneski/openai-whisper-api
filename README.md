@@ -139,8 +139,15 @@ Audio data is saved as webm.
   
   Install this if you do not have OpenAI account/API key or you do not want to use the `whisper API`. See the [installation procedure](#installing-whisper-python-module) below.
 
+- [OpenAI](https://github.com/openai/openai-node), library that provides convenient access to the OpenAI API from Node.js apps. This will replace `axios` call.
+
+  ```sh
+  npm install openai
+  ```
 
 - [Form-Data](https://github.com/form-data/form-data#readme), library to create readable `multipart/form-data` streams. `Whisper API` currently only has python and curl implementations. Since [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData) does not exist inside `route handler` so we need an alternative.
+
+  ***Deprecation note:*** _This library is no longer used and has been superseded by the OpenAI Node.js library._
 
   ```sh
   npm install form-data
@@ -148,10 +155,11 @@ Audio data is saved as webm.
 
 - [Axios](https://axios-http.com/), promise based HTTP client for the browser and node.js. As alternative to `curl`, I tried using just plain `fetch` but I was encountering problem when attaching the form data. So I will be using `axios` instead to submit request to `Whisper API` endpoint.
 
+  ***Deprecation note:*** _This library is no longer used and has been superseded by the OpenAI Node.js library._
+
   ```sh
   npm install axios
   ```
-
 
 # Next 13 Route Handler + File Upload
 
@@ -182,69 +190,71 @@ However, one caveat, Next 13 gives warning:
 
 # Speech To Text
 
-Since we are using Next.js, we will be using the `curl` method as written in the [documentation](https://platform.openai.com/docs/api-reference/audio). And since there is no `curl` in Node.js and `fetch` is causing problems, we will be using `axios` instead.
+I just replaced the API call using [OpenAI Node.js library](https://platform.openai.com/docs/api-reference/audio) from previously using `axios` to simplify everything.
 
-In route.js's POST handler
 ```javascript
+export async function whisper({
+  mode = 'transcriptions',
+  file,
+  model = 'whisper-1',
+  prompt = '',
+  response_format = 'json',
+  temperature = 0,
+  language = 'en',
+}) {
 
-  ...
+  try {
 
-  let filepath = `${path.join("public", "uploads", filename)}`
-    
-  let header = {
-    'Content-Type': 'multipart/form-data',
-    'Accept': 'application/json',
-    'Authorization': `Bearer ${process.env.OPENAI_APIKEY}`
+    let response = {}
+
+    response = await openai.createTranscription(
+      file,
+      model,
+      prompt,
+      response_format,
+      temperature,
+      language,
+    )
+
+    return response
+
+  } catch(error) {
+
+    console.log(error)
+
+    throw error
+
   }
 
-  let formData = new FormData()
-  formData.append("file", fs.createReadStream(filepath))
-  formData.append("model", "whisper-1")
-  formData.append("response_format", "vtt") // e.g. text, vtt, srt
-  
-  const url = "https://api.openai.com/v1/audio/transcriptions"
-  
-  let data = await new Promise((resolve, reject) => {
+}
+```
 
-    axios.post(url, formData, {
-      headers: {
-        ...header,
-      }
-    }).then((response) => {
-        
-      resolve({
-        output: response.data,
-      })
+I will be using this in the POST handler for the route, as shown below.
 
-    }).catch((error) => {
-        
-      reject(error)
+```javascript
+try {
 
-    })
-
+  const result = await whisper({
+    file: fs.createReadStream(filepath),
+    response_format: 'vtt',
+    temperature: options.temperature, // e.g. 0, 0.7
+    language: options.language, // e.g. en, ja
   })
 
-  ...
+  return new Response(JSON.stringify({ 
+      data: result?.data,
+  }), {
+      status: 200,
+  })
+  
+} catch(error) {
 
+  console.log(error)
+
+}
 ```
-
-The actual `OPENAI_APIKEY` is stored in `.env` file and is not included in this repository.
-Please use the `.env.example` as pattern to create your own `.env` file.
 
 For this project, I need the `timestamp` of the transcription so I am using `response_format` as `vtt` file. If you use `text` file, the output will not contain any timestamp.
-
-There are two endpoints we can use
-```javascript
-// transcription
-const transcribe_url = "https://api.openai.com/v1/audio/transcriptions"
-
-// translation
-const transcribe_url = "https://api.openai.com/v1/audio/translations"
-
-```
-
-If the audio data will contain other language, it is better to use the translation endpoint.
-
 
 # Installing Whisper Python module
 
