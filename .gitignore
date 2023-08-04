@@ -20,10 +20,12 @@ stories
 .env
 out
 build
+*.bu.json
 *.bu.css
 *.bu.jsx
 *.bu.js
 *.bu.ts
+*.bu.md
 *.m4a
 *.m4a.srt
 *.m4a.txt
