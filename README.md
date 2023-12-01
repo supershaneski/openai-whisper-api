@@ -3,9 +3,11 @@ openai-whisper-api
 
 This is a sample speech transcription web application implementing `OpenAI` [Speech to Text API](https://platform.openai.com/docs/guides/speech-to-text) based on [Whisper](https://openai.com/research/whisper), an automatic speech recognition (ASR) system, built using [Next 13](https://nextjs.org/), the `React` framework.
 
-> **Update:** I added support using the python module instead of the whisper API so that you can use whisper without OpenAI account. See [python module installation](#installing-whisper-python-module) section for more details.
-
 以下は、OpenAIテキスト読み上げAPIを実装したサンプルスピーチ転写アプリです。このアプリは、自動音声認識（ASR）システムのWhisperに基づいて構築され、ReactフレームワークのNext 13を使用しています。
+
+> **Update:** Now using [v4.20 OpenAI Node module](https://www.npmjs.com/package/openai)
+
+> **Update:** I added support using the python module instead of the whisper API so that you can use whisper without OpenAI account. See [python module installation](#installing-whisper-python-module) section for more details.
 
 ---
 
@@ -194,37 +196,37 @@ I just replaced the API call using [OpenAI Node.js library](https://platform.ope
 
 ```javascript
 export async function whisper({
-  mode = 'transcriptions',
-  file,
-  model = 'whisper-1',
-  prompt = '',
-  response_format = 'json',
-  temperature = 0,
-  language = 'en',
+    mode = 'transcriptions',
+    file,
+    model = 'whisper-1',
+    prompt = '',
+    response_format = 'json',
+    temperature = 0,
+    language = 'en',
 }) {
 
-  try {
+    const options = {
+        file,
+        model,
+        prompt,
+        response_format,
+        temperature,
+        language,
+    }
 
-    let response = {}
+    try {
 
-    response = await openai.createTranscription(
-      file,
-      model,
-      prompt,
-      response_format,
-      temperature,
-      language,
-    )
+        const response = mode === 'translations' ? await openai.audio.translations.create(options) : await openai.audio.transcriptions.create(options)
+        
+        return response
 
-    return response
+    } catch(error) {
+        
+        console.log(error.name, error.message)
 
-  } catch(error) {
-
-    console.log(error)
-
-    throw error
-
-  }
+        throw error
+        
+    }
 
 }
 ```
