@@ -1,10 +1,10 @@
-import { Configuration, OpenAIApi } from 'openai'
+import OpenAI from 'openai'
 
-const configuration = new Configuration({
+const openai = new OpenAI({
     apiKey: process.env.OPENAI_APIKEY,
+    maxRetries: 4,
+    timeout: 60 * 1000 // 60s
 })
-
-const openai = new OpenAIApi(configuration)
 
 export async function whisper({
     mode = 'transcriptions',
@@ -16,42 +16,27 @@ export async function whisper({
     language = 'en',
 }) {
 
+    const options = {
+        file,
+        model,
+        prompt,
+        response_format,
+        temperature,
+        language,
+    }
+
     try {
 
-        let response = {}
-
-        if(mode === 'translations') {
-
-            response = await openai.createTranslation(
-                file,
-                model,
-                prompt,
-                response_format,
-                temperature,
-                language,
-            )
-
-        } else {
-
-            response = await openai.createTranscription(
-                file,
-                model,
-                prompt,
-                response_format,
-                temperature,
-                language,
-            )
-
-        }
-
+        const response = mode === 'translations' ? await openai.audio.translations.create(options) : await openai.audio.transcriptions.create(options)
+        
         return response
 
     } catch(error) {
-
-        console.log(error)
+        
+        console.log(error.name, error.message)
 
         throw error
-
+        
     }
 
 }

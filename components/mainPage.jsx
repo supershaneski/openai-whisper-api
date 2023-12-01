@@ -168,6 +168,10 @@ export default function MainPage() {
 
         }
 
+        console.log("handle stream2...")
+
+        //mediaRef.current = new MediaRecorder(stream)
+
         mediaRef.current.addEventListener('dataavailable', handleData)
         mediaRef.current.addEventListener("stop", handleStop)
         

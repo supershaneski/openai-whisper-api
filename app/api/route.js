@@ -119,6 +119,8 @@ export async function POST(req) {
 
     }
 
+    console.log('using whisper api...', filename)
+
     let data = ''
 
     try {
@@ -131,18 +133,13 @@ export async function POST(req) {
             language: options.language,
         })
     
-        data = result?.data
+        data = result
 
-        console.log(data)
+        console.log(options.endpoint, data)
 
     } catch(error) {
 
-        if(error.response) {
-            console.log(error.response.status)
-            console.log(error.response.data)
-        } else {
-            console.log(error.message)
-        }
+        console.log(error.name, error.message)
 
     } finally {
 
