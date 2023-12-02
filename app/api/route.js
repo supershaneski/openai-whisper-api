@@ -33,6 +33,40 @@ export async function POST(req) {
     
     fs.writeFileSync(filepath, buffer)
 
+    // remove silence part of the audio
+    let outFile = `${path.join('public', 'uploads', `out-${filename}`)}`
+    const retval = await new Promise((resolve, reject) => {
+
+        const sCommand = `ffmpeg -i ${filepath} -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-50dB:detection=peak,aformat=dblp,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-50dB:detection=peak,aformat=dblp,areverse ${outFile}`
+
+        exec(sCommand, (error, stdout, stderr) => {
+            
+            if (error) {
+                
+                resolve({
+                    status: 'error',
+                })
+
+            } else {
+
+                resolve({
+                    status: 'success',
+                    error: stderr,
+                    out: stdout,
+                })
+
+            }
+            
+        })
+
+    })
+
+    // if successful, use the output file
+    if(retval.status === 'success') {
+        filepath = outFile
+    }
+
+
     /**
      * We are going to check the file size here to decide
      * whether to send it or not to the API.
@@ -40,7 +74,7 @@ export async function POST(req) {
      * There is probably a better way to check if the file has no audio data.
      */
     const minFileSize = 18000 // bytes
-    const stats = fs.statSync(filepath)
+    const stats = fs.statSync(outFile)
 
     if(parseInt(stats.size) < minFileSize) {
 
