@@ -5,7 +5,7 @@ This is a sample speech transcription web application implementing `OpenAI` [Spe
 
 以下は、OpenAIテキスト読み上げAPIを実装したサンプルスピーチ転写アプリです。このアプリは、自動音声認識（ASR）システムのWhisperに基づいて構築され、ReactフレームワークのNext 13を使用しています。
 
-> **Update:** Added code to trim the silent parts of the audio file
+> **Update:** Added [code to trim the silent parts of the audio file](#using-ffmpeg-to-trim-audio-file) and [Safari and mobile recording should now be fixed](#known-issues).
 
 > **Update:** Now using [v4.20 OpenAI Node module](https://www.npmjs.com/package/openai)
 
@@ -27,6 +27,7 @@ For other versions, please check:
 - [Speed Test](#speed-test)
 - [Stack](#stack)
 - [Next 13 Route Handler + File Upload](#next-13-route-handler--file-upload)
+- [Using FFMPEG To Trim Audio File](#using-ffmpeg-to-trim-audio-file)
 - [Speech To Text](#speech-to-text)
 - [Installing Whisper Python module](#installing-whisper-python-module)
 - [Installation](#installation)
@@ -58,6 +59,8 @@ It is possible to delete the transcription item. Hover on a transcription to sho
 > TODO: save the transcription to file
 
 # Known Issues
+
+- **Fixed**. Using **desktop Safari** and **mobile Safari** should now be okay. Chrome should have no problem. The fix is the unintended consequence of adding [audio trimming](#using-ffmpeg-to-trim-audio-file).
 
 - **Fixed**. If `minDecibels` values is the same as `maxDecibels`, it will throw an error `INDEX_SIZE_ERR`. The default value of `maxDecibels` is -30dB. I added `maxDecibels` in the code to handle this.
 
@@ -191,6 +194,42 @@ export async function POST(req) {
 However, one caveat, Next 13 gives warning:
 > (node:5006) ExperimentalWarning: buffer.Blob is an experimental feature. This feature could change at any time
 
+# Using FFMPEG To Trim Audio File
+
+Remember the `MaxPause` setting where we wait for silence before sending the audio to the server?
+Well, we probably should trim it from the audio file. In this end, we will be using **ffmpeg**. 
+So it now becomes necessary [to install it](#installing-whisper-python-module).
+
+After saving the audio file, we call the `ffmpeg` command
+
+```javascript
+const sCommand = `ffmpeg -i ${filepath} -af silenceremove=stop_periods=-1:stop_duration=1:stop_threshold=-50dB ${outFile}`
+      
+exec(sCommand, (error, stdout, stderr) => {
+    
+  if (error) {
+      
+    resolve({
+      status: 'error',
+    })
+
+  } else {
+
+    resolve({
+      status: 'success',
+      error: stderr,
+      out: stdout,
+    })
+
+  }
+    
+})
+```
+
+If there is no error and the resulting file is more than the minimum file size, we send the audio data to whisper.
+
+There is an unintended consequence of this code which fixes the problem of Invalid file format error in Whisper API for Safari browser (desktop and mobile).
+
 
 # Speech To Text
 
@@ -296,6 +335,8 @@ If that is successful, continue to the installation procedures below.
 
 
 # Installation
+
+**Important:** Be sure to [install ***ffmpeg***](#using-ffmpeg-to-trim-audio-file) in your system before running this app. See previous section.
 
 Clone the repository and install the dependencies
 
