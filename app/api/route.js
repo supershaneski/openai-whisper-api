@@ -37,8 +37,9 @@ export async function POST(req) {
     let outFile = `${path.join('public', 'uploads', `out-${filename}`)}`
     const retval = await new Promise((resolve, reject) => {
 
-        const sCommand = `ffmpeg -i ${filepath} -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-50dB:detection=peak,aformat=dblp,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-50dB:detection=peak,aformat=dblp,areverse ${outFile}`
-
+        //const sCommand = `ffmpeg -i ${filepath} -af silenceremove=start_periods=1:start_silence=0.1:start_threshold=-50dB:detection=peak,aformat=dblp,areverse,silenceremove=start_periods=1:start_silence=0.1:start_threshold=-50dB:detection=peak,aformat=dblp,areverse ${outFile}`
+        const sCommand = `ffmpeg -i ${filepath} -af silenceremove=stop_periods=-1:stop_duration=1:stop_threshold=-50dB ${outFile}`
+        
         exec(sCommand, (error, stdout, stderr) => {
             
             if (error) {

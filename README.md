@@ -5,6 +5,8 @@ This is a sample speech transcription web application implementing `OpenAI` [Spe
 
 以下は、OpenAIテキスト読み上げAPIを実装したサンプルスピーチ転写アプリです。このアプリは、自動音声認識（ASR）システムのWhisperに基づいて構築され、ReactフレームワークのNext 13を使用しています。
 
+> **Update:** Added code to trim the silent parts of the audio file
+
 > **Update:** Now using [v4.20 OpenAI Node module](https://www.npmjs.com/package/openai)
 
 > **Update:** I added support using the python module instead of the whisper API so that you can use whisper without OpenAI account. See [python module installation](#installing-whisper-python-module) section for more details.
